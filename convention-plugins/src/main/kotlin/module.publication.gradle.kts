@@ -18,26 +18,25 @@ publishing {
 
         // Provide artifacts information required by Maven Central
         pom {
-            name.set("Kotlin Multiplatform library template")
-            description.set("Dummy library to test deployment to Maven Central")
-            url.set("https://github.com/Kotlin/multiplatform-library-template")
+            name.set("Kotlin Multiplatform Calendar")
+            description.set("Kotlin Multiplatform Calendar for jetpack compose")
+            url.set("https://github.com/ronjunevaldoz/KMPCalendar")
 
             licenses {
                 license {
-                    name.set("MIT")
-                    url.set("https://opensource.org/licenses/MIT")
+                    name.set("Apache License, Version 2.0")
+                    url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
                 }
             }
             developers {
                 developer {
-                    id.set("JetBrains")
-                    name.set("JetBrains Team")
-                    organization.set("JetBrains")
-                    organizationUrl.set("https://www.jetbrains.com")
+                    id.set("ronjunevaldoz")
+                    name.set("Ron June Valdoz")
+                    email.set("ronjune.lopez@gmail.com")
                 }
             }
             scm {
-                url.set("https://github.com/Kotlin/multiplatform-library-template")
+                url.set("https://github.com/ronjunevaldoz/KMPCalendar")
             }
         }
     }
