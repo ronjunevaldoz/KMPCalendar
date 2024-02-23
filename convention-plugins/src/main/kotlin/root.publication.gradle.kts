@@ -3,7 +3,7 @@ plugins {
 }
 
 allprojects {
-    group = "io.github.ronjunevaldoz.kmp-calendar"
+    group = "io.github.ronjunevaldoz"
     version = "0.0.1"
 }
 

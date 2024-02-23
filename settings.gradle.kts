@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "kmp-calendar"
-include(":library")
+include(":kmp-calendar")

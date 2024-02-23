@@ -35,7 +35,7 @@ kotlin {
 }
 
 android {
-    namespace = "io.github.ronjunevaldoz.kmp-calendar"
+    namespace = "io.github.ronjunevaldoz.kmp_calendar"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
