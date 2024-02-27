@@ -43,6 +43,9 @@ enum class CalendarSelection {
 }
 
 interface CalendarState {
+    var start: CalendarDay?
+    var end: CalendarDay?
+    var selected : CalendarDay?
     var currentDate: LocalDate
     var type: CalendarType
     var selection: CalendarSelection
@@ -94,6 +97,9 @@ object CalendarDefaults {
 }
 
 class MutableCalendarState(defaultDate: LocalDate = today) : CalendarState {
+    override var start: CalendarDay? by mutableStateOf(null)
+    override var end: CalendarDay? by mutableStateOf(null)
+    override var selected: CalendarDay? by mutableStateOf(null)
     override var currentDate: LocalDate by mutableStateOf(defaultDate)
     override var type: CalendarType by mutableStateOf(CalendarType.Day)
     override var selection: CalendarSelection by mutableStateOf(CalendarSelection.Single)
@@ -221,12 +227,41 @@ fun Calendar(
                 }
             }
             val grids = state.generateCalendarGrid(currentDate.year, currentDate.monthNumber)
+
             LazyVerticalGrid(
                 columns = GridCells.Fixed(7),
                 contentPadding = PaddingValues(horizontal = 12.dp),
             ) {
                 items(grids) {
-                    calendarDay(it, onSelectDay)
+                    calendarDay(it) { day ->
+                        if(state.selection == CalendarSelection.Range) {
+                            val end = state.end
+                            val start = state.start
+
+                            if (start == null) {
+                                state.start = day
+                            }
+                             if (end == null) {
+                                state.end = day
+                            }
+
+                            if (start != null && day.date <= start.date) {
+                                state.start = day
+                                state.end = null
+                            }
+
+                            if (end != null && day.date >= end.date) {
+                                state.end = day
+                            }
+
+                            if (end != null && start != null &&  day.date > start.date &&  day.date <= end.date) {
+                                state.end = day
+                            }
+                        } else {
+                            state.selected = day
+                        }
+                        onSelectDay(day)
+                    }
                 }
             }
         }
