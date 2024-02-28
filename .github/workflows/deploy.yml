@@ -43,7 +43,7 @@ jobs:
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v6
         with:
-          gpg_private_key: $(gpg --export-secret-key --armor "635BC0635BF934AABF766AA0B272A82914C268B2") #${{ secrets.OSSRH_GPG_SECRET_KEY }}
+          gpg_private_key: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
           passphrase: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
           git_user_signingkey: true
           git_commit_gpgsign: true
