@@ -10,11 +10,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.atStartOfDayIn
-import kotlinx.datetime.toJavaInstant
-import java.util.Date
-
 @Composable
 fun CalendarPicker(
     modifier: Modifier = Modifier,
