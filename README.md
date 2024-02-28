@@ -42,9 +42,13 @@ The most part of the job is already automated for you. However, deployment to Ma
     ```bash
     gpg --send-keys --keyserver keyserver.ubuntu.com "<your key id>"
     ```
+1. - [ ] To generate GPG_SECREY_KEY
+   ```bash
+   gpg --armor --export-secret-key ronjune.lopez@gmail.com | pbcopy
+   ``` 
 1. - [ ] Now you should create secrets available to your GitHub Actions
     1. via `gh` command
-    ```bash
+    ```bash 
     gh secret set OSSRH_GPG_SECRET_KEY -a actions --body "$(gpg --export-secret-key --armor "<your key id>")"
     gh secret set OSSRH_GPG_SECRET_KEY_ID -a actions --body "<your key id>"
     gh secret set OSSRH_GPG_SECRET_KEY_PASSWORD -a actions --body "<your key password>"
