@@ -92,13 +92,11 @@ fun DefaultCalendarDayItem(
             Text(
                 text = "${day.date.dayOfMonth}",
                 color = if (isPrimary) Color.White else color,
-                fontWeight = FontWeight.SemiBold
             )
         } else {
             Text(
                 text = "${day.date.dayOfMonth}",
                 color = color,
-                fontWeight = FontWeight.SemiBold
             )
         }
     }
