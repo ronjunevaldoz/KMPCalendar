@@ -63,6 +63,10 @@ Calendar(
 ```
 ## Customize
 ```kotlin
+val calendarState = rememberCalendarState(
+    selection = if (isDateRangePicker) CalendarSelection.Range else CalendarSelection.Single,
+)
+
 val setCalendarDefaults = {
     if (calendarState.selection == CalendarSelection.Single) {
         calendarState.selected = // selected date 
@@ -106,13 +110,13 @@ Dialog(onDismissRequest = {
         shape = RoundedCornerShape(16.dp),
     ) {
         SetImmersiveScreen()
-        CustomCalendar()
+        CustomCalendar(state = calendarState)
     }
 }
 
 // Custom Calendar
 @Composable
-fun CustomCalendar() {
+fun CustomCalendar(state: CalendarState) {
     Calendar(
         modifier = Modifier.padding(vertical = 12.dp),
         state = calendarState,
