@@ -1,9 +1,11 @@
 package io.github.ronjunevaldoz.kmp_calendar
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -13,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,10 +45,17 @@ enum class CalendarSelection {
     Range
 }
 
+enum class CalendarCursor {
+    Clear,
+    StartDate,
+    EndDate,
+}
+
 interface CalendarState {
+    var cursor: CalendarCursor
     var start: CalendarDay?
     var end: CalendarDay?
-    var selected : CalendarDay?
+    var selected: CalendarDay?
     var currentDate: LocalDate
     var type: CalendarType
     var selection: CalendarSelection
@@ -96,13 +106,21 @@ object CalendarDefaults {
     )
 }
 
-class MutableCalendarState(defaultDate: LocalDate = today) : CalendarState {
-    override var start: CalendarDay? by mutableStateOf(null)
-    override var end: CalendarDay? by mutableStateOf(null)
-    override var selected: CalendarDay? by mutableStateOf(null)
+class MutableCalendarState(
+    defaultDate: LocalDate = today,
+    cursor: CalendarCursor = CalendarCursor.Clear,
+    selection: CalendarSelection = CalendarSelection.Single,
+    selected: CalendarDay? = null,
+    start: CalendarDay? = null,
+    end: CalendarDay? = null
+) : CalendarState {
+    override var cursor: CalendarCursor by mutableStateOf(cursor)
+    override var start: CalendarDay? by mutableStateOf(start)
+    override var end: CalendarDay? by mutableStateOf(end)
+    override var selected: CalendarDay? by mutableStateOf(selected)
     override var currentDate: LocalDate by mutableStateOf(defaultDate)
     override var type: CalendarType by mutableStateOf(CalendarType.Day)
-    override var selection: CalendarSelection by mutableStateOf(CalendarSelection.Single)
+    override var selection: CalendarSelection by mutableStateOf(selection)
     override var hideTodayHighlight: Boolean by mutableStateOf(false)
 
     override fun increaseMonth(month: Int) {
@@ -176,8 +194,28 @@ class MutableCalendarState(defaultDate: LocalDate = today) : CalendarState {
 }
 
 @Composable
-fun rememberCalendarState(): CalendarState {
-    return remember { MutableCalendarState() }
+fun rememberCalendarState(
+    cursor: CalendarCursor = CalendarCursor.Clear,
+    selection: CalendarSelection = CalendarSelection.Single,
+    selected: CalendarDay? = null,
+    start: CalendarDay? = null,
+    end: CalendarDay? = null,
+): CalendarState {
+    return remember(
+        cursor,
+        selection,
+        selected,
+        start,
+        end
+    ) {
+        MutableCalendarState(
+            cursor = cursor,
+            selection = selection,
+            selected = selected,
+            start = start,
+            end = end,
+        )
+    }
 }
 
 @Composable
@@ -198,15 +236,21 @@ fun Calendar(
             color = textColor
         )
     },
-    calendarDay: @Composable (day: CalendarDay, onSelect: (day: CalendarDay) -> Unit) -> Unit = { day, onSelect ->
-        CalendarDayItem(day, onSelect)
+    calendarDay: @Composable (day: CalendarDay, inRange: Boolean, onDaySelected: (day: CalendarDay) -> Unit) -> Unit = { day, inRange, onDaySelected ->
+        DefaultCalendarDayItem(
+            modifier = Modifier
+                .size(30.dp).clickable { onDaySelected(day) },
+            inRange = inRange,
+            start = state.start,
+            end = state.end,
+            colors = CalendarDefaults.calendarColors(),
+            selectedDate = state.selected,
+            day = day,
+        )
     },
     calendarMonth: @Composable () -> Unit = {
         CalendarMonthView(state = state, colors = colors)
-    },
-    onSelectDay: (
-        CalendarDay
-    ) -> Unit = {}
+    }
 ) {
     val currentDate = state.currentDate
     Column(
@@ -228,39 +272,56 @@ fun Calendar(
             }
             val grids = state.generateCalendarGrid(currentDate.year, currentDate.monthNumber)
 
+            LaunchedEffect(state.selected) {
+                val selectionDay = state.selected
+                if (state.selection == CalendarSelection.Range && selectionDay != null) {
+                    when (state.cursor) {
+                        CalendarCursor.Clear -> {
+                            state.cursor = CalendarCursor.StartDate
+//                            state.selected = selectionDay
+                            state.start = selectionDay
+                            state.end = null
+                        }
+
+                        CalendarCursor.StartDate -> {
+                            val start = state.start
+                            val end = state.end
+                            if (start != null) {
+                                if (end != null && end.date < start.date) {
+                                    state.start = selectionDay
+                                } else {
+                                    state.end = selectionDay
+                                    state.cursor = CalendarCursor.Clear
+                                }
+                            } else {
+                                state.start = selectionDay
+                                state.cursor = CalendarCursor.EndDate
+                            }
+                        }
+
+                        CalendarCursor.EndDate -> {
+                            state.end = selectionDay
+                            state.cursor = CalendarCursor.Clear
+                        }
+                    }
+                }
+            }
+
             LazyVerticalGrid(
                 columns = GridCells.Fixed(7),
                 contentPadding = PaddingValues(horizontal = 12.dp),
             ) {
-                items(grids) {
-                    calendarDay(it) { day ->
-                        if(state.selection == CalendarSelection.Range) {
-                            val end = state.end
-                            val start = state.start
-
-                            if (start == null) {
-                                state.start = day
-                            }
-                             if (end == null) {
-                                state.end = day
-                            }
-
-                            if (start != null && day.date <= start.date) {
-                                state.start = day
-                                state.end = null
-                            }
-
-                            if (end != null && day.date >= end.date) {
-                                state.end = day
-                            }
-
-                            if (end != null && start != null &&  day.date > start.date &&  day.date <= end.date) {
-                                state.end = day
-                            }
-                        } else {
-                            state.selected = day
-                        }
-                        onSelectDay(day)
+                items(grids) { day ->
+                    val start = state.start?.date
+                    val end = state.end?.date
+                    val inRange = if (start != null && end != null) {
+                        val range = start..end
+                        day.date in range
+                    } else {
+                        false
+                    }
+                    calendarDay(day, inRange) { selectionDay ->
+                        state.selected = selectionDay
                     }
                 }
             }

@@ -24,7 +24,7 @@ fun CalendarMonthView(state: CalendarState, colors: CalendarColors) {
     Text(
         text = "${currentDate.year}",
         style = MaterialTheme.typography.titleLarge,
-        fontWeight = FontWeight.Bold,
+//        fontWeight = FontWeight.Bold,
         color = textColor,
     )
     LazyVerticalGrid(
@@ -49,7 +49,7 @@ fun CalendarMonthView(state: CalendarState, colors: CalendarColors) {
                         // change calendar to day view
                         state.type = CalendarType.Day
                     },
-                    fontWeight = FontWeight.Bold,
+//                    fontWeight = FontWeight.Bold,
                     color = textColor
                 )
             }
