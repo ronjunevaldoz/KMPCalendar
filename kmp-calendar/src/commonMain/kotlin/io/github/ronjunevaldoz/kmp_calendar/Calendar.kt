@@ -287,7 +287,7 @@ fun Calendar(
                             val start = state.start
                             val end = state.end
                             if (start != null) {
-                                if (end != null && end.date < start.date) {
+                                if (selectionDay.date < start.date) {
                                     state.start = selectionDay
                                 } else {
                                     state.end = selectionDay
