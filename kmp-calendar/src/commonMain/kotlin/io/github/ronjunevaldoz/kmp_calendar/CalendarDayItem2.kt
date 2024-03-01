@@ -2,6 +2,7 @@ package io.github.ronjunevaldoz.kmp_calendar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -56,7 +57,7 @@ fun DefaultCalendarDayItem(
         if (isDaySelected) {
             Box(
                 modifier = Modifier
-                    .size(30.dp)
+                    .fillMaxSize()
                     .background(primaryColor, CircleShape)
             )
         }
@@ -72,7 +73,7 @@ fun DefaultCalendarDayItem(
             if (!sameRange) {
                 Box(
                     modifier = Modifier
-                        .size(30.dp)
+                        .fillMaxSize()
                         .background(
                             primaryColor.copy(0.5f),
                             rangeShape
@@ -82,7 +83,7 @@ fun DefaultCalendarDayItem(
             if (isPrimary) {
                 Box(
                     modifier = Modifier
-                        .size(30.dp)
+                        .fillMaxSize()
                         .background(
                             primaryColor,
                             CircleShape
