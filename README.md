@@ -9,8 +9,9 @@
 
 Jetpack compose multiplatform calendar
 
-## Screenshot
-![image](https://github.com/ronjunevaldoz/KMPCalendar/assets/4947998/edc63524-4d26-4ecf-afac-4eedc97debfa)
+## Screenshot 
+![image](https://github.com/ronjunevaldoz/KMPCalendar/assets/4947998/fab7e7bb-6940-4c8a-8ce4-304d0f6c27d9)
+
 
 ## Installation
 ```kotlin
