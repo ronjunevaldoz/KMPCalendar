@@ -9,6 +9,10 @@
 
 Jetpack compose multiplatform calendar
 
+## Screenshot 
+![image](https://github.com/ronjunevaldoz/KMPCalendar/assets/4947998/fab7e7bb-6940-4c8a-8ce4-304d0f6c27d9)
+
+
 ## Installation
 ```kotlin
 repositories { 
@@ -37,14 +41,108 @@ Calendar(
     weekHeader = {   
         // DayWeek 
     } ,
-    calendarDay = { day, onSelect ->
-        CalendarDayItem(day, onSelect)          
-    },
+    calendarDay = { day, inRange, onDaySelected ->
+        DefaultCalendarDayItem(
+            modifier = Modifier
+                .size(30.dp)
+                .clickableNoRipple {
+                    onDaySelected(day)
+                    airBnbSelector(day)
+                },
+            inRange = inRange,
+            start = calendarState.start,
+            end = calendarState.end,
+            colors = CalendarDefaults.calendarColors(),
+            selectedDate = calendarState.selected,
+            day = day,
+        )
+    }
     calendarMonth = {
         CalendarMonthView(state = state, colors = colors)
-    },
-    onSelectDay = {
-        
-    }
+    }, 
 )
 ```
+## Customize
+```kotlin
+val calendarState = rememberCalendarState(
+    selection = if (isDateRangePicker) CalendarSelection.Range else CalendarSelection.Single,
+)
+
+val setCalendarDefaults = {
+    if (calendarState.selection == CalendarSelection.Single) {
+        calendarState.selected = // selected date 
+    } else {
+        calendarState.start = // selected start date 
+        calendarState.end = // selected end date
+    }
+}
+
+// Calendar Picker
+Text(
+    text = "Select start date",
+    modifier = Modifier
+        .clickable { 
+            isDatePickerShow = true
+            calendarState.cursor = CalendarCursor.StartDate
+            setCalendarDefaults()
+        }, 
+)
+Text(
+    text = "Select end date",
+    modifier = Modifier
+        .clickable { 
+            isDatePickerShow = true
+            calendarState.cursor = CalendarCursor.EndDate
+            setCalendarDefaults()
+        }, 
+)
+
+// Calendar Dialog
+Dialog(onDismissRequest = {
+    isDatePickerShow = !isDatePickerShow
+}, DialogProperties(usePlatformDefaultWidth = false)) {
+    Card(
+        modifier = Modifier
+            .width(230.dp)
+            .wrapContentHeight(),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        shape = RoundedCornerShape(16.dp),
+    ) {
+        SetImmersiveScreen()
+        CustomCalendar(state = calendarState)
+    }
+}
+
+// Custom Calendar
+@Composable
+fun CustomCalendar(state: CalendarState) {
+    Calendar(
+        modifier = Modifier.padding(vertical = 12.dp),
+        state = calendarState,
+        colors = CalendarDefaults.calendarColors(),
+        weekHeader = {
+            Text(text = "${it.name.first()}")
+        },
+        calendarDay = { day, inRange, onDaySelected ->
+            DefaultCalendarDayItem(
+                modifier = Modifier
+                    .size(30.dp)
+                    .clickableNoRipple {
+                        onDaySelected(day)
+                        airBnbSelector(day)
+                    },
+                inRange = inRange,
+                start = calendarState.start,
+                end = calendarState.end,
+                colors = CalendarDefaults.calendarColors(),
+                selectedDate = calendarState.selected,
+                day = day,
+            )
+        }
+    )
+}
+```
+## Contributors
+- [realubit02](https://github.com/realubit02)
