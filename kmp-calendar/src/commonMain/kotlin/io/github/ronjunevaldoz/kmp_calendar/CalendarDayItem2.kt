@@ -1,7 +1,6 @@
 package io.github.ronjunevaldoz.kmp_calendar
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
@@ -19,14 +18,13 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun DefaultCalendarDayItem(
+    modifier: Modifier = Modifier,
     inRange: Boolean,
     start: CalendarDay?,
     end: CalendarDay?,
     colors: CalendarColors,
-    hideTodayHighlight: Boolean,
     selectedDate: CalendarDay?,
     day: CalendarDay,
-    onSelect: (CalendarDay) -> Unit
 ) {
     val primaryColor by colors.contentColor(enabled = true)
     val isDaySelected = selectedDate?.date == day.date
@@ -53,9 +51,7 @@ fun DefaultCalendarDayItem(
     val endSelected = end?.date == day.date
 
     Box(
-        modifier = Modifier
-            .size(30.dp)
-            .clickable { onSelect(day) },
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         if (isDaySelected) {
@@ -97,13 +93,11 @@ fun DefaultCalendarDayItem(
             Text(
                 text = "${day.date.dayOfMonth}",
                 color = if (isPrimary) Color.White else color,
-                fontWeight = FontWeight.SemiBold
             )
         } else {
             Text(
                 text = "${day.date.dayOfMonth}",
                 color = color,
-                fontWeight = FontWeight.SemiBold
             )
         }
     }
