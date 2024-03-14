@@ -47,6 +47,8 @@ jobs:
           passphrase: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
           git_user_signingkey: true
           git_commit_gpgsign: true
+      - name: List keys
+        run: gpg -K
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
